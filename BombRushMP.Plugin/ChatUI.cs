@@ -464,7 +464,7 @@ namespace BombRushMP.Plugin
                     TrySendChatMessage();
                 if (Input.GetKeyDown(KeyCode.Escape))
                     SetState(States.Unfocused);
-                if (Input.GetKeyDown(KeyCode.UpArrow))
+                if (Input.GetKeyDown(KeyCode.UpArrow) && EventSystem.current.currentSelectedGameObject == _inputField.gameObject)
                 {
                     _supressTextChangedEvent = true;
                     try
@@ -473,6 +473,7 @@ namespace BombRushMP.Plugin
                         {
                             _currentHistory = History.Count - 1;
                             _inputField.text = History[_currentHistory];
+                            _inputField.caretPosition = _inputField.text.Length;
                         }
                         else
                         {
@@ -480,6 +481,7 @@ namespace BombRushMP.Plugin
                             if (_currentHistory < 0)
                                 _currentHistory = 0;
                             _inputField.text = History[_currentHistory];
+                            _inputField.caretPosition = _inputField.text.Length;
                         }
                     }
                     finally
@@ -487,7 +489,7 @@ namespace BombRushMP.Plugin
                         _supressTextChangedEvent = false;
                     }
                 }
-                if (Input.GetKeyDown(KeyCode.DownArrow))
+                if (Input.GetKeyDown(KeyCode.DownArrow) && EventSystem.current.currentSelectedGameObject == _inputField.gameObject)
                 {
                     _supressTextChangedEvent = true;
                     try
@@ -498,6 +500,7 @@ namespace BombRushMP.Plugin
                             if (_currentHistory > History.Count)
                                 _currentHistory = History.Count - 1;
                             _inputField.text = History[_currentHistory];
+                            _inputField.caretPosition = _inputField.text.Length;
                         }
                     }
                     finally
