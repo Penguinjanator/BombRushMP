@@ -306,22 +306,26 @@ namespace BombRushMP.Plugin
                             page = int.Parse(args[1]);
 
                         var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key, StringComparer.InvariantCultureIgnoreCase).ToArray();
-                        var totalPages = Mathf.CeilToInt(emojis.Length / pageSize);
-                        var zeroIndexPage = page - 1;
-                        var pageBegin = zeroIndexPage * pageSize;
+                        var totalPages = Mathf.CeilToInt((float)emojis.Length / pageSize);
 
-                        var emojiStr = $"Page ({page}/{totalPages})\n";
-
-                        for(var i=pageBegin; i < pageBegin + pageSize && i < emojis.Length; i++)
+                        if (page > 0 && page <= totalPages)
                         {
-                            var emoji = emojis[i];
-                            emojiStr += $"<sprite={emoji.Value}> - :{emoji.Key}:\n";
+                            var zeroIndexPage = page - 1;
+                            var pageBegin = zeroIndexPage * pageSize;
+
+                            var emojiStr = $"Page {page}/{totalPages}\n";
+
+                            for (var i = pageBegin; i < pageBegin + pageSize && i < emojis.Length; i++)
+                            {
+                                var emoji = emojis[i];
+                                emojiStr += $"<sprite={emoji.Value}> - :{emoji.Key}:\n";
+                            }
+
+                            if (page < totalPages)
+                                emojiStr += $"Type {Constants.CommandChar}emojis {page + 1} for next page\n";
+
+                            AddMessage(emojiStr);
                         }
-
-                        if (page < totalPages)
-                            emojiStr += $"Type {Constants.CommandChar}emojis {page + 1} for next page\n";
-
-                        AddMessage(emojiStr);
                     }
                     break;
                 case "mods":
