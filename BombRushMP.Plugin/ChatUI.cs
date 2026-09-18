@@ -21,6 +21,10 @@ namespace BombRushMP.Plugin
     public class ChatUI : MonoBehaviour
     {
         public static ChatUI Instance { get; private set; }
+        private static List<string> History = new();
+        private const int MaxHistory = 100;
+        private int _currentHistory = -1;
+
         private float FontSize => MPSettings.Instance.ChatFontSize;
         private const int MaxMessages = 250;
         private Button _sendButton;
@@ -45,6 +49,22 @@ namespace BombRushMP.Plugin
         }
         public States State { get; private set; } = States.None;
 
+        private void AddToHistory(string message)
+        {
+            History.Add(message);
+            while (History.Count > MaxHistory)
+            {
+                History.RemoveAt(0);
+            }
+        }
+
+        private bool _supressTextChangedEvent = false;
+        private void TextChanged(string newText)
+        {
+            if (_supressTextChangedEvent) return;
+            _currentHistory = -1;
+        }
+
         private void Awake()
         {
             Instance = this;
@@ -52,6 +72,7 @@ namespace BombRushMP.Plugin
             _sendButton = _chatWindow.transform.Find("Send Button").GetComponent<Button>();
             _inputField = _chatWindow.transform.Find("Input Field").GetComponent<TMP_InputField>();
             _inputField.characterLimit = Constants.MaxMessageLength;
+            _inputField.onValueChanged.AddListener(TextChanged);
             _scrollRect = _chatWindow.transform.Find("Scroll View").GetComponent<ScrollRect>();
             _scrollBarImages = _scrollRect.transform.Find("Scrollbar Vertical").GetComponentsInChildren<Image>(true);
             _scrollRectImage = _scrollRect.GetComponent<Image>();
@@ -206,6 +227,7 @@ namespace BombRushMP.Plugin
             _inputField.text = "";
             SetState(States.Unfocused);
             if (!TMPFilter.IsValidChatMessage(message)) return;
+            AddToHistory(message);
             var clientController = ClientController.Instance;
             clientController.SendChatPacket(message);
             if (message[0] == Constants.CommandChar)
@@ -442,6 +464,47 @@ namespace BombRushMP.Plugin
                     TrySendChatMessage();
                 if (Input.GetKeyDown(KeyCode.Escape))
                     SetState(States.Unfocused);
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    _supressTextChangedEvent = true;
+                    try
+                    {
+                        if (_currentHistory == -1 && History.Count > 0)
+                        {
+                            _currentHistory = History.Count - 1;
+                            _inputField.text = History[_currentHistory];
+                        }
+                        else
+                        {
+                            _currentHistory--;
+                            if (_currentHistory < 0)
+                                _currentHistory = 0;
+                            _inputField.text = History[_currentHistory];
+                        }
+                    }
+                    finally
+                    {
+                        _supressTextChangedEvent = false;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    _supressTextChangedEvent = true;
+                    try
+                    {
+                        if (_currentHistory >= 0 && History.Count > 0)
+                        {
+                            _currentHistory++;
+                            if (_currentHistory > History.Count)
+                                _currentHistory = History.Count - 1;
+                            _inputField.text = History[_currentHistory];
+                        }
+                    }
+                    finally
+                    {
+                        _supressTextChangedEvent = false;
+                    }
+                }
             }
             finally
             {
