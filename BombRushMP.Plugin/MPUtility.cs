@@ -92,12 +92,54 @@ namespace BombRushMP.Plugin
 
         public static string ParseMessageEmojis(string message)
         {
-            var emojis = MPAssets.Instance.Emojis;
-            foreach(var emoji in emojis.Sprites)
+            var builda = new StringBuilder();
+            var inEmoji = false;
+            var emojiContents = "";
+            for(var i = 0; i < message.Length; i++)
             {
-                message = message.Replace(emoji.Key, $"<sprite={emoji.Value}>");
+                if (!inEmoji)
+                {
+                    if (message[i] == ':')
+                    {
+                        inEmoji = true;
+                        emojiContents = "";
+                        continue;
+                    }
+                    else
+                    {
+                        builda.Append(message[i]);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (message[i] == ':')
+                    {
+                        inEmoji = false;
+                        var finalEmoji = emojiContents.ToLowerInvariant();
+                        if (MPAssets.Instance.Emojis.Sprites.TryGetValue(finalEmoji, out var finalSprite))
+                        {
+                            builda.Append($"<sprite={finalSprite}>");
+                        }
+                        else
+                        {
+                            builda.Append($":{emojiContents}:");
+                        }
+                        emojiContents = "";
+                        continue;
+                    }
+                    else
+                    {
+                        emojiContents += message[i];
+                        continue;
+                    }
+                }
             }
-            return message;
+            if (inEmoji)
+            {
+                builda.Append($":{emojiContents}");
+            }
+            return builda.ToString();
         }
 
         public static string GetTeamName(LobbyState lobbyState, Team team, byte teamId)
