@@ -260,14 +260,47 @@ namespace BombRushMP.Plugin
                         }
                     }
                     break;
-                case "emojis":
-                    var emojiStr = "Available emojis:\n";
-                    var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key[1].ToString(), StringComparer.InvariantCultureIgnoreCase).ToArray();
-                    foreach (var emoji in emojis)
+                case "emoji_search":
                     {
-                        emojiStr += $"{emoji.Key} - <sprite={emoji.Value}>\n";
+                        if (args.Length > 1)
+                        {
+                            var query = args[1].ToLowerInvariant();
+                            var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key[1].ToString(), StringComparer.InvariantCultureIgnoreCase).Where(x => x.Key.Contains(query)).ToArray();
+                            var emojiStr = $"Search results for '{query}'\n";
+                            foreach(var emoji in emojis)
+                            {
+                                emojiStr += $"{emoji.Key} - <sprite={emoji.Value}>\n";
+                            }
+                            AddMessage(emojiStr);
+                        }
                     }
-                    AddMessage(emojiStr);
+                    break;
+                case "emojis":
+                    {
+                        const int pageSize = 10;
+
+                        var page = 1;
+                        if (args.Length > 1)
+                            page = int.Parse(args[1]);
+
+                        var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key[1].ToString(), StringComparer.InvariantCultureIgnoreCase).ToArray();
+                        var totalPages = Mathf.CeilToInt(emojis.Length / pageSize);
+                        var zeroIndexPage = page - 1;
+                        var pageBegin = zeroIndexPage * pageSize;
+
+                        var emojiStr = $"Page ({page}/{totalPages})\n";
+
+                        for(var i=pageBegin; i < pageBegin + pageSize && i < emojis.Length; i++)
+                        {
+                            var emoji = emojis[i];
+                            emojiStr += $"{emoji.Key} - <sprite={emoji.Value}>\n";
+                        }
+
+                        if (page < totalPages)
+                            emojiStr += $"Type {Constants.CommandChar}emojis {page + 1} for next page\n";
+
+                        AddMessage(emojiStr);
+                    }
                     break;
                 case "mods":
                     var modStr = "Installed mods:\n";
