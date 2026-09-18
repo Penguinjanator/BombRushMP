@@ -287,11 +287,11 @@ namespace BombRushMP.Plugin
                         if (args.Length > 1)
                         {
                             var query = args[1].ToLowerInvariant();
-                            var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key[1].ToString(), StringComparer.InvariantCultureIgnoreCase).Where(x => x.Key.Contains(query)).ToArray();
+                            var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key, StringComparer.InvariantCultureIgnoreCase).Where(x => x.Key.Contains(query)).ToArray();
                             var emojiStr = $"Search results for '{query}'\n";
                             foreach(var emoji in emojis)
                             {
-                                emojiStr += $"{emoji.Key} - <sprite={emoji.Value}>\n";
+                                emojiStr += $"<sprite={emoji.Value}> - :{emoji.Key}:\n";
                             }
                             AddMessage(emojiStr);
                         }
@@ -305,7 +305,7 @@ namespace BombRushMP.Plugin
                         if (args.Length > 1)
                             page = int.Parse(args[1]);
 
-                        var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key[1].ToString(), StringComparer.InvariantCultureIgnoreCase).ToArray();
+                        var emojis = MPAssets.Instance.Emojis.Sprites.OrderBy(x => x.Key, StringComparer.InvariantCultureIgnoreCase).ToArray();
                         var totalPages = Mathf.CeilToInt(emojis.Length / pageSize);
                         var zeroIndexPage = page - 1;
                         var pageBegin = zeroIndexPage * pageSize;
@@ -315,7 +315,7 @@ namespace BombRushMP.Plugin
                         for(var i=pageBegin; i < pageBegin + pageSize && i < emojis.Length; i++)
                         {
                             var emoji = emojis[i];
-                            emojiStr += $"{emoji.Key} - <sprite={emoji.Value}>\n";
+                            emojiStr += $"<sprite={emoji.Value}> - :{emoji.Key}:\n";
                         }
 
                         if (page < totalPages)
