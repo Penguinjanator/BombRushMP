@@ -25,7 +25,8 @@ namespace BombRushMP.Plugin
             {SpecialSkins.Steve, "StevePrefab" },
             {SpecialSkins.RedMinecraft, "XmasRedPrefab" },
             {SpecialSkins.Minecraft, "MinecraftPrefab" },
-            {SpecialSkins.LowTierGod, "LowTierGodPrefab" }
+            {SpecialSkins.LowTierGod, "LowTierGodPrefab" },
+            {SpecialSkins.Duchess, "DuchessPrefab" }
         };
         private Dictionary<SpecialSkins, GameObject> _specialSkinVisuals = new();
         private Dictionary<SpecialSkins, AudioLibrary> _specialSkinAudio = new();

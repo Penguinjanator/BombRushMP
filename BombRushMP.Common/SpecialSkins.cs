@@ -18,6 +18,7 @@ namespace BombRushMP.Common
         Steve,
         RedMinecraft,
         Minecraft,
-        LowTierGod
+        LowTierGod,
+        Duchess
     }
 }
