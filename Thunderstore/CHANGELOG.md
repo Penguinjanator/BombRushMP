@@ -1,3 +1,6 @@
+## 1.7.1
+- Fixed "emojis" command reporting the wrong total number of pages.
+
 ## 1.7.0
 - Emojis are no longer case sensitive.
 - The "emojis" chat command now displays pages, rather than the full list of emojis.
