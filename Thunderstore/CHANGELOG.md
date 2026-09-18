@@ -1,3 +1,12 @@
+## 1.7.0
+- Emojis are no longer case sensitive.
+- The "emojis" chat command now displays pages, rather than the full list of emojis.
+- There is a new "emoji_search (query)" chat command, to search emojis by a query.
+- Fixed confirmation prompt overlapping player list when banning a player.
+- Holding left shift when banning a player from the player list skips the confirmation prompt.
+- Sent chat history: Pressing up/down with the chat box open now scrolls through your previously sent messages.
+- Updated badges and emojis.
+
 ## 1.6.1
 - Ragdolls now work for way more characters without a BRC skeleton. Some might still not work if they are missing certain humanoid bones or built weirdly.
 - Player IDs are now displayed on the player list and spectator mode.
