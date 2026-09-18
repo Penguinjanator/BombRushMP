@@ -122,9 +122,7 @@ namespace BombRushMP.Plugin
                 }, 
                 () =>
                 {
-                    var playerList = PlayerListUI.Instance;
-                    if (playerList != null)
-                        playerList.Displaying = true;
+
                 }
             );
         }
