@@ -107,19 +107,24 @@ namespace BombRushMP.Plugin
         private void TryBan()
         {
             if (_player == null) return;
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                ClientController.Instance.SendChatPacket($"{Constants.CommandChar}banid {_player.ClientId}");
+                return;
+            }
+            var playerList = PlayerListUI.Instance;
+            if (playerList != null)
+                playerList.Displaying = false;
             Core.Instance.UIManager.Overlay.ShowPopup($"You will ban {MPUtility.GetPlayerDisplayName(_player.ClientState.Name)} (ID:{_player.ClientId}). Are you sure?", "Yes", "No", 
                 () =>
                 {
                     ClientController.Instance.SendChatPacket($"{Constants.CommandChar}banid {_player.ClientId}");
-                    var playerList = PlayerListUI.Instance;
-                    if (playerList != null)
-                        playerList.Displaying = false;
                 }, 
                 () =>
                 {
                     var playerList = PlayerListUI.Instance;
                     if (playerList != null)
-                        playerList.Displaying = false;
+                        playerList.Displaying = true;
                 }
             );
         }
