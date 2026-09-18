@@ -328,6 +328,15 @@ namespace BombRushMP.Plugin
                         SpecialSkinManager.Instance.ApplySpecialSkinToPlayer(player, SpecialSkins.Jill);
                     }
                     break;
+
+                case "specialskin":
+                    if (args.Length > 1 && ClientController.Instance.GetLocalUser().IsAdmin)
+                    {
+                        var skin = (SpecialSkins)int.Parse(args[1]);
+                        var player = WorldHandler.instance.GetCurrentPlayer();
+                        SpecialSkinManager.Instance.ApplySpecialSkinToPlayer(player, skin);
+                    }    
+                    break;
             }
                 
         }
